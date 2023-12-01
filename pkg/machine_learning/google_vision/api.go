@@ -14,8 +14,7 @@ import (
 type client struct {
 	gc *apivisionv2.ImageAnnotatorClient
 
-	reqs  []*visionv2.AnnotateImageRequest
-	feats []*visionv2.Feature
+	reqs []*visionv2.AnnotateImageRequest
 }
 
 func (c *client) FaceEmotion(ctx context.Context, bf io.Reader) (*core.Emotion, error) {
@@ -28,7 +27,7 @@ func (c *client) FaceEmotion(ctx context.Context, bf io.Reader) (*core.Emotion, 
 		return nil, nil
 	}
 
-	c.reqs[0] = &visionv2.AnnotateImageRequest{Image: img, Features: c.feats}
+	c.reqs[0].Image = img
 	annotations, err := c.gc.BatchAnnotateImages(ctx, &visionv2.BatchAnnotateImagesRequest{
 		Requests: c.reqs,
 	})
@@ -88,9 +87,10 @@ func NewClient(ctx context.Context) (core.Detector, error) {
 		Type:       visionv2.Feature_FACE_DETECTION,
 		Model:      "builtin/stable",
 	}
+	reqs := make([]*visionv2.AnnotateImageRequest, 1)
+	reqs[0] = &visionv2.AnnotateImageRequest{Features: features}
 	return &client{
-		gc:    c,
-		reqs:  make([]*visionv2.AnnotateImageRequest, 1),
-		feats: features,
+		gc:   c,
+		reqs: reqs,
 	}, nil
 }
