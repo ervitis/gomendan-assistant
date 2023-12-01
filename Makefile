@@ -7,4 +7,5 @@ help: ## Show this help
 run: ## Run the application
 	go mod download
 	go build -o ./out/webcam -ldflags "-s -w" ./cmd/webcam && \
+		(open http://localhost:8880/mendan &) && \
 		GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS} ./out/webcam
