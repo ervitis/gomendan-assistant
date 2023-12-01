@@ -36,6 +36,7 @@ func streamCapture(ctx context.Context, capt *gocv.VideoCapture, stream *mjpeg.S
 			continue
 		}
 
+		// get the scanned image and buffer it
 		buf, _ = gocv.IMEncode(".jpg", img)
 
 		if capt.IsOpened() && buf != nil && !img.Empty() {
@@ -55,6 +56,7 @@ func streamCapture(ctx context.Context, capt *gocv.VideoCapture, stream *mjpeg.S
 			gocv.PutText(&img, emotion.String(), pt, gocv.FontHersheyPlain, 1.4, color.RGBA{B: 255}, 2)
 		}
 
+		// update the image with the rects
 		buf, _ = gocv.IMEncode(".jpg", img)
 		stream.UpdateJPEG(buf.GetBytes())
 		buf.Close()
